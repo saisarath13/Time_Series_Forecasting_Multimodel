@@ -1,6 +1,5 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Disable GPU usage for TensorFlow if not available
-
+import tensorflow as tf
 from flask import Flask, render_template, request
 import yfinance as yf
 import numpy as np
@@ -8,19 +7,33 @@ from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import datetime
 
+# Disable GPU usage for TensorFlow if not available
+if not tf.config.list_physical_devices('GPU'):
+    os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Disable GPU if no GPU is found
+
 app = Flask(__name__)
 
 # Load the fine-tuned models
-rnn_model = load_model('models/fine_tuned_rnn_model.keras')
-lstm_model = load_model('models/fine_tuned_lstm_model.keras')
+try:
+    rnn_model = load_model('models/fine_tuned_rnn_model.keras')
+    lstm_model = load_model('models/fine_tuned_lstm_model.keras')
+except Exception as e:
+    print(f"Error loading models: {e}")
+    raise
 
 # Load scaler for normalization
 scaler = MinMaxScaler(feature_range=(0, 1))
 
 # Function to fetch stock data
 def fetch_stock_data(ticker, start_date='2015-01-01'):
-    stock_data = yf.download(ticker, start=start_date)  # No end_date means fetch till today
-    return stock_data[['Close']]  # Use only the closing prices
+    try:
+        stock_data = yf.download(ticker, start=start_date)  # No end_date means fetch till today
+        if stock_data.empty:
+            raise ValueError(f"No data found for ticker: {ticker}")
+        return stock_data[['Close']]  # Use only the closing prices
+    except Exception as e:
+        print(f"Error fetching stock data: {e}")
+        raise
 
 # Function to create sequences for prediction
 def create_sequences(data, sequence_length=60):
@@ -43,7 +56,11 @@ def make_prediction(model, ticker, future_date):
 
     # Calculate the number of days until the future date
     today = datetime.date.today()
-    future_date_obj = datetime.datetime.strptime(future_date, "%d-%m-%Y").date()
+    try:
+        future_date_obj = datetime.datetime.strptime(future_date, "%d-%m-%Y").date()
+    except ValueError:
+        raise ValueError("Invalid date format. Please use dd-mm-yyyy.")
+    
     days_ahead = (future_date_obj - today).days
 
     # Loop to predict the stock price for each day from today until the future date

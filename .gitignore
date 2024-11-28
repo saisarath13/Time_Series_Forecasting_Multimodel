@@ -24,9 +24,6 @@ instance/
 *.sqlite
 *.db
 
-# Model files (if you don't want to push large model files to GitHub)
-models/*.keras
-models/*.h5
 
 # OS-specific files (macOS and Windows)
 .DS_Store
