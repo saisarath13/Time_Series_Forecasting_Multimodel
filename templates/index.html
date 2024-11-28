@@ -19,32 +19,31 @@
         <!-- Form to enter stock ticker, model, and future date -->
         <form method="POST" action="/">
             <label for="ticker">Enter Stock Ticker:</label>
-            <input type="text" id="ticker" name="ticker" required placeholder="e.g., AAPL" value="{{ request.form['ticker'] if request.form['ticker'] else '' }}">
+            <input type="text" id="ticker" name="ticker" required placeholder="e.g., AAPL" value="{{ ticker if ticker else '' }}">
             
             <label for="model">Select Model:</label>
             <select name="model" id="model">
-                <option value="rnn" {% if request.form['model'] == 'rnn' %}selected{% endif %}>RNN</option>
-                <option value="lstm" {% if request.form['model'] == 'lstm' %}selected{% endif %}>LSTM</option>
+                <option value="rnn" {% if model == 'RNN' %}selected{% endif %}>RNN</option>
+                <option value="lstm" {% if model == 'LSTM' %}selected{% endif %}>LSTM</option>
             </select>
             
             <label for="future_date">Enter Future Date (dd-mm-yyyy):</label>
-            <input type="text" id="future_date" name="future_date" required placeholder="e.g., 30-11-2024" value="{{ request.form['future_date'] if request.form['future_date'] else '' }}">
+            <input type="text" id="future_date" name="future_date" required placeholder="e.g., 30-11-2024" value="{{ future_date if future_date else '' }}">
             
             <button type="submit">Get Prediction</button>
         </form>
 
         <!-- Display prediction results -->
-        {% if predictions is not none %}
+        {% if predictions %}
         <div class="result">
             <h2>Prediction for {{ ticker }} on {{ future_date }}:</h2>
             <p><strong>Model:</strong> {{ model }}</p>
-            
             <p><strong>Predicted Stock Price:</strong> ${{ predictions[-1] | round(2) }}</p>
-            
             <a href="/" class="button">Try Another</a>
         </div>
         {% endif %}
 
+        <!-- Display errors if any -->
         {% if error %}
         <p class="error">{{ error }}</p>
         {% endif %}

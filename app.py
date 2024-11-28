@@ -25,6 +25,10 @@ lstm_model_key = 'models/fine_tuned_lstm_model.keras'  # The S3 key for the LSTM
 # Function to download model from S3
 def download_model_from_s3(model_key, local_path):
     try:
+        # Ensure the target directory exists
+        os.makedirs(os.path.dirname(local_path), exist_ok=True)
+        
+        print(f"Attempting to download {model_key} to {local_path}...")
         s3.download_file(bucket_name, model_key, local_path)
         print(f"Model {model_key} downloaded successfully.")
     except Exception as e:
@@ -34,15 +38,22 @@ def download_model_from_s3(model_key, local_path):
 # Function to load the models (download if not already downloaded)
 def load_models():
     try:
-        if not os.path.exists('models/fine_tuned_rnn_model.keras'):
-            download_model_from_s3(rnn_model_key, 'models/fine_tuned_rnn_model.keras')
+        model_dir = 'models/'
+
+        # Ensure the model directory exists
+        os.makedirs(model_dir, exist_ok=True)
+
+        # Download models if they do not exist
+        if not os.path.exists(model_dir + 'fine_tuned_rnn_model.keras'):
+            download_model_from_s3(rnn_model_key, model_dir + 'fine_tuned_rnn_model.keras')
         
-        if not os.path.exists('models/fine_tuned_lstm_model.keras'):
-            download_model_from_s3(lstm_model_key, 'models/fine_tuned_lstm_model.keras')
+        if not os.path.exists(model_dir + 'fine_tuned_lstm_model.keras'):
+            download_model_from_s3(lstm_model_key, model_dir + 'fine_tuned_lstm_model.keras')
 
         # Load the fine-tuned models
-        rnn_model = load_model('models/fine_tuned_rnn_model.keras')
-        lstm_model = load_model('models/fine_tuned_lstm_model.keras')
+        rnn_model = load_model(model_dir + 'fine_tuned_rnn_model.keras')
+        lstm_model = load_model(model_dir + 'fine_tuned_lstm_model.keras')
+
         return rnn_model, lstm_model
     except Exception as e:
         print(f"Error loading models: {e}")
@@ -109,6 +120,12 @@ def make_prediction(model, ticker, future_date):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    predictions = None
+    error = None
+    ticker = None
+    future_date = None
+    model_name = None
+
     if request.method == 'POST':
         ticker = request.form['ticker'].upper()  # Get the stock ticker from the form
         model_choice = request.form['model']  # Get the model choice (RNN or LSTM)
@@ -118,25 +135,32 @@ def index():
         try:
             datetime.datetime.strptime(future_date, "%d-%m-%Y")
         except ValueError:
-            return render_template('index.html', error="Invalid date format. Please use dd-mm-yyyy.")
+            error = "Invalid date format. Please use dd-mm-yyyy."
+            return render_template('index.html', error=error, predictions=predictions)
 
         # Load models from S3 if not loaded already
         try:
+            print("Loading models from S3...")
             rnn_model, lstm_model = load_models()
         except Exception as e:
-            return render_template('index.html', error="Error loading models from S3.")
+            error = f"Error loading models from S3: {e}"  # Detailed error message
+            return render_template('index.html', error=error, predictions=predictions)
 
         # Choose the model
-        if model_choice == 'rnn':
-            predictions, future_date_obj = make_prediction(rnn_model, ticker, future_date)
-            model_name = "RNN"
-        else:
-            predictions, future_date_obj = make_prediction(lstm_model, ticker, future_date)
-            model_name = "LSTM"
+        try:
+            if model_choice == 'rnn':
+                predictions, future_date_obj = make_prediction(rnn_model, ticker, future_date)
+                model_name = "RNN"
+            else:
+                predictions, future_date_obj = make_prediction(lstm_model, ticker, future_date)
+                model_name = "LSTM"
+        except Exception as e:
+            error = f"Error during prediction: {e}"  # Detailed error message
+            return render_template('index.html', error=error, predictions=predictions)
 
         return render_template('index.html', predictions=predictions, model=model_name, ticker=ticker, future_date=future_date_obj.strftime('%d-%m-%Y'))
 
-    return render_template('index.html', predictions=None)
+    return render_template('index.html', predictions=predictions, error=error)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)  # Listen on all IPs, necessary for Docker

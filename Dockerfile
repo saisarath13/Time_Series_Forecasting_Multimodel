@@ -4,11 +4,14 @@ FROM python:3.9-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy only the requirements file first (to take advantage of Docker cache)
+COPY requirements.txt /app/
 
 # Install the necessary dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Now copy the rest of the application code
+COPY . /app
 
 # Ensure unnecessary files aren't copied into the Docker image
 RUN rm -rf venv __pycache__ .pytest_cache .vscode .idea *.log *.env
