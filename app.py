@@ -6,6 +6,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import datetime
+import boto3
 
 # Disable GPU usage for TensorFlow if not available
 if not tf.config.list_physical_devices('GPU'):
@@ -13,13 +14,39 @@ if not tf.config.list_physical_devices('GPU'):
 
 app = Flask(__name__)
 
-# Load the fine-tuned models
-try:
-    rnn_model = load_model('models/fine_tuned_rnn_model.keras')
-    lstm_model = load_model('models/fine_tuned_lstm_model.keras')
-except Exception as e:
-    print(f"Error loading models: {e}")
-    raise
+# Initialize S3 client
+s3 = boto3.client('s3')
+
+# Define the S3 bucket and model filenames
+bucket_name = 'my-keras-models-stock'  # Replace with your actual S3 bucket name
+rnn_model_key = 'models/fine_tuned_rnn_model.keras'  # The S3 key for the RNN model
+lstm_model_key = 'models/fine_tuned_lstm_model.keras'  # The S3 key for the LSTM model
+
+# Function to download model from S3
+def download_model_from_s3(model_key, local_path):
+    try:
+        s3.download_file(bucket_name, model_key, local_path)
+        print(f"Model {model_key} downloaded successfully.")
+    except Exception as e:
+        print(f"Error downloading model {model_key}: {e}")
+        raise
+
+# Function to load the models (download if not already downloaded)
+def load_models():
+    try:
+        if not os.path.exists('models/fine_tuned_rnn_model.keras'):
+            download_model_from_s3(rnn_model_key, 'models/fine_tuned_rnn_model.keras')
+        
+        if not os.path.exists('models/fine_tuned_lstm_model.keras'):
+            download_model_from_s3(lstm_model_key, 'models/fine_tuned_lstm_model.keras')
+
+        # Load the fine-tuned models
+        rnn_model = load_model('models/fine_tuned_rnn_model.keras')
+        lstm_model = load_model('models/fine_tuned_lstm_model.keras')
+        return rnn_model, lstm_model
+    except Exception as e:
+        print(f"Error loading models: {e}")
+        raise
 
 # Load scaler for normalization
 scaler = MinMaxScaler(feature_range=(0, 1))
@@ -92,6 +119,12 @@ def index():
             datetime.datetime.strptime(future_date, "%d-%m-%Y")
         except ValueError:
             return render_template('index.html', error="Invalid date format. Please use dd-mm-yyyy.")
+
+        # Load models from S3 if not loaded already
+        try:
+            rnn_model, lstm_model = load_models()
+        except Exception as e:
+            return render_template('index.html', error="Error loading models from S3.")
 
         # Choose the model
         if model_choice == 'rnn':
