@@ -10,6 +10,9 @@ COPY . /app
 # Install the necessary dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Ensure unnecessary files aren't copied into the Docker image
+RUN rm -rf venv __pycache__ .pytest_cache .vscode .idea *.log *.env
+
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
 
