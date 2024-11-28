@@ -1,0 +1,13 @@
+# Ignore model files (e.g., Keras models, TensorFlow models)
+models/
+*.h5
+*.keras
+*.pkl
+
+# Ignore logs and temporary files
+/logs
+/tmp
+
+# Ignore other unnecessary files
+*.pdf
+*.txt
