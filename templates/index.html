@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Price Prediction</h1>
+        
+        <!-- Instructions for the user -->
+        <p class="instructions">
+            Enter a valid stock ticker symbol (e.g., "AAPL" for Apple, "GOOG" for Google). 
+            Then, specify the **future date** you would like the prediction for (e.g., "30-11-2024").
+        </p>
+
+        <!-- Form to enter stock ticker, model, and future date -->
+        <form method="POST" action="/">
+            <label for="ticker">Enter Stock Ticker:</label>
+            <input type="text" id="ticker" name="ticker" required placeholder="e.g., AAPL" value="{{ request.form['ticker'] if request.form['ticker'] else '' }}">
+            
+            <label for="model">Select Model:</label>
+            <select name="model" id="model">
+                <option value="rnn" {% if request.form['model'] == 'rnn' %}selected{% endif %}>RNN</option>
+                <option value="lstm" {% if request.form['model'] == 'lstm' %}selected{% endif %}>LSTM</option>
+            </select>
+            
+            <label for="future_date">Enter Future Date (dd-mm-yyyy):</label>
+            <input type="text" id="future_date" name="future_date" required placeholder="e.g., 30-11-2024" value="{{ request.form['future_date'] if request.form['future_date'] else '' }}">
+            
+            <button type="submit">Get Prediction</button>
+        </form>
+
+        <!-- Display prediction results -->
+        {% if predictions is not none %}
+        <div class="result">
+            <h2>Prediction for {{ ticker }} on {{ future_date }}:</h2>
+            <p><strong>Model:</strong> {{ model }}</p>
+            
+            <p><strong>Predicted Stock Price:</strong> ${{ predictions[-1] | round(2) }}</p>
+            
+            <a href="/" class="button">Try Another Ticker or Date</a>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+/* Basic page styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 60%;
+    margin: 50px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+    font-size: 36px;
+    text-align: center;
+}
+
+.instructions {
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+input, select {
+    padding: 10px;
+    font-size: 16px;
+    width: 60%;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+button {
+    padding: 12px 20px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.result {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.result h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.result p {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.result .button {
+    padding: 12px 20px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 18px;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.result .button:hover {
+    background-color: #0056b3;
+}

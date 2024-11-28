@@ -1,0 +1,40 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Virtual environment directories
+env/
+venv/
+ENV/
+.venv/
+
+# IDE or editor specific files (e.g., VSCode, PyCharm)
+.vscode/
+.idea/
+
+# Flask-related
+instance/
+*.sqlite
+*.db
+
+# Model files (if you don't want to push large model files to GitHub)
+models/*.keras
+
+# OS-specific files (macOS and Windows)
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Dependency directories (if you don't want to push the entire environment)
+/node_modules
+
+# pytest cache
+.cache/
+
+# Ignore environment files
+*.env
