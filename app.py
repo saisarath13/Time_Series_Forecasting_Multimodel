@@ -1,3 +1,6 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Disable GPU usage for TensorFlow if not available
+
 from flask import Flask, render_template, request
 import yfinance as yf
 import numpy as np
@@ -86,4 +89,4 @@ def index():
     return render_template('index.html', predictions=None)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)  # Listen on all IPs, necessary for Docker

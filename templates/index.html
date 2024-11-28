@@ -13,7 +13,7 @@
         <!-- Instructions for the user -->
         <p class="instructions">
             Enter a valid stock ticker symbol (e.g., "AAPL" for Apple, "GOOG" for Google). 
-            Then, specify the **future date** you would like the prediction for (e.g., "30-11-2024").
+            Then, specify the future date for prediction.
         </p>
 
         <!-- Form to enter stock ticker, model, and future date -->
@@ -41,7 +41,7 @@
             
             <p><strong>Predicted Stock Price:</strong> ${{ predictions[-1] | round(2) }}</p>
             
-            <a href="/" class="button">Try Another Ticker or Date</a>
+            <a href="/" class="button">Try Another</a>
         </div>
         {% endif %}
 
