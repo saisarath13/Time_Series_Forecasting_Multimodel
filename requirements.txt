@@ -7,3 +7,4 @@ Flask
 joblib
 numpy
 yfinance
+tensorflow-lite
