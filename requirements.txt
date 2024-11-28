@@ -1,17 +1,9 @@
-awscli
 flask
-tensorflow
 numpy
 pandas
-scikit-learn
 gunicorn
 boto3
 Flask
-html5lib
 joblib
-keras
 numpy
-pandas
-scikit-learn
-scipy
 yfinance
