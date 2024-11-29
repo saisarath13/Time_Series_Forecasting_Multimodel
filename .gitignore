@@ -78,3 +78,6 @@ sdist/
 # Miscellaneous files
 *.bak
 *.tmp
+# Ignore model files
+models/
+*.keras
