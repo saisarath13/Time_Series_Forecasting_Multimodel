@@ -1,10 +1,6 @@
 flask
-numpy
-pandas
 gunicorn
 boto3
 Flask
-joblib
 numpy
 yfinance
-tensorflow-lite
