@@ -1,5 +1,5 @@
-# Use Python 3.9 as the base image
-FROM python:3.9-slim
+# Use a specific Python version as the base image
+FROM python:3.9.10-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -11,16 +11,17 @@ COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Now copy the rest of the application code
-COPY . /app
+COPY . /app/
 
-# Ensure unnecessary files aren't copied into the Docker image
+# Remove unnecessary files to keep the image clean
 RUN rm -rf venv __pycache__ .pytest_cache .vscode .idea *.log *.env
 
-# Make port 5000 available to the world outside this container
+# Expose the port your app will run on
 EXPOSE 5000
 
-# Define environment variable for CUDA (optional if you're using a CPU-only version)
-ENV CUDA_VISIBLE_DEVICES=-1
+# Ensure the app listens on all interfaces (important for Docker)
+ENV FLASK_RUN_HOST=0.0.0.0
 
 # Run app.py when the container launches
-CMD ["python", "app.py"]
+ENTRYPOINT ["python"]
+CMD ["app.py"]
