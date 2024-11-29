@@ -82,23 +82,28 @@ def create_sequences(data, sequence_length=60):
 
 # Function to make predictions with the selected model
 def make_prediction(model, ticker, future_date):
-    stock_data = fetch_stock_data(ticker)
-    scaled_data = scaler.fit_transform(stock_data)
-    
-    # Prepare the latest data for prediction
-    X = create_sequences(scaled_data)
-    X = X.reshape((X.shape[0], X.shape[1], 1))  # Reshaping for RNN/LSTM input
-
-    predictions = []
-    current_input = X[-1]  # Start with the last available data point
-
-    # Calculate the number of days until the future date
+    # Validate future date
     today = datetime.date.today()
     try:
         future_date_obj = datetime.datetime.strptime(future_date, "%d-%m-%Y").date()
     except ValueError:
         raise ValueError("Invalid date format. Please use dd-mm-yyyy.")
     
+    if future_date_obj <= today:
+        raise ValueError("Future date must be later than today.")
+
+    stock_data = fetch_stock_data(ticker)
+    scaled_data = scaler.fit_transform(stock_data)
+    
+    # Prepare the latest data for prediction
+    sequence_length = 60  # Ensure sequence length matches the model's training input
+    X = create_sequences(scaled_data, sequence_length=sequence_length)
+    X = X.reshape((X.shape[0], X.shape[1], 1))  # Reshaping for RNN/LSTM input
+
+    predictions = []
+    current_input = X[-1]  # Start with the last available data point
+
+    # Calculate the number of days until the future date
     days_ahead = (future_date_obj - today).days
 
     # Loop to predict the stock price for each day from today until the future date
@@ -163,4 +168,4 @@ def index():
     return render_template('index.html', predictions=predictions, error=error)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)  # Listen on all IPs, necessary for Docker
+    app.run(debug=False, host='0.0.0.0', port=5000)  # Listen on all IPs, necessary for Docker

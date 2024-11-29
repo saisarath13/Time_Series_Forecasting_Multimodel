@@ -7,3 +7,4 @@ matplotlib
 gunicorn
 boto3
 yfinance
+gunicorn
