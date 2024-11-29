@@ -1,7 +1,9 @@
-flask
+Flask
+scikit-learn
+tensorflow
+numpy
+pandas
+matplotlib
 gunicorn
 boto3
-Flask
-numpy
 yfinance
-tensorflow
