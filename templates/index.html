@@ -4,48 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Price Prediction</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        p.instructions {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            height: 40px;
+            padding: 8px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            height: 45px;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result, .error {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+
+        .result h2 {
+            color: #333;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .try-another {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .try-another button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .try-another button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Stock Price Prediction</h1>
-        
-        <!-- Instructions for the user -->
-        <p class="instructions">
-            Enter a valid stock ticker symbol (e.g., "AAPL" for Apple, "GOOG" for Google). 
-            Then, specify the future date for prediction.
-        </p>
+        <p class="instructions">Enter a valid stock symbol (e.g., "AAPL" for Apple, "GOOG" for Google).</p>
 
-        <!-- Form to enter stock ticker, model, and future date -->
+        <!-- Form -->
         <form method="POST" action="/">
-            <label for="ticker">Enter Stock Ticker:</label>
-            <input type="text" id="ticker" name="ticker" required placeholder="e.g., AAPL" value="{{ ticker if ticker else '' }}">
-            
-            <label for="model">Select Model:</label>
-            <select name="model" id="model">
-                <option value="rnn" {% if model == 'RNN' %}selected{% endif %}>RNN</option>
-                <option value="lstm" {% if model == 'LSTM' %}selected{% endif %}>LSTM</option>
-            </select>
-            
-            <label for="future_date">Enter Future Date (dd-mm-yyyy):</label>
-            <input type="text" id="future_date" name="future_date" required placeholder="e.g., 30-11-2024" value="{{ future_date if future_date else '' }}">
-            
+            <div class="form-group">
+                <label for="ticker">Enter Stock Symbol:</label>
+                <input type="text" id="ticker" name="ticker" placeholder="e.g., AAPL" required>
+            </div>
+
+            <div class="form-group">
+                <label for="model">Select Model:</label>
+                <select name="model" id="model" required>
+                    <option value="rnn">RNN</option>
+                    <option value="lstm">LSTM</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="future_date">Enter Future Date (dd-mm-yyyy):</label>
+                <input type="text" id="future_date" name="future_date" placeholder="e.g., 30-11-2024" required>
+            </div>
+
             <button type="submit">Get Prediction</button>
         </form>
 
-        <!-- Display prediction results -->
-        {% if predictions %}
+        <!-- Display prediction result -->
+        {% if predictions is not none %}
         <div class="result">
-            <h2>Prediction for {{ ticker }} on {{ future_date }}:</h2>
-            <p><strong>Model:</strong> {{ model }}</p>
-            <p><strong>Predicted Stock Price:</strong> ${{ predictions[-1] | round(2) }}</p>
-            <a href="/" class="button">Try Another</a>
+            <h2>Prediction Results</h2>
+            <p><strong>Stock Symbol:</strong> {{ ticker }}</p>
+            <p><strong>Model Used:</strong> {{ model }}</p>
+            <p><strong>Future Date:</strong> {{ future_date }}</p>
+            <p><strong>Predicted Price:</strong> ${{ "%.2f" | format(predictions[-1]) }}</p>
+        </div>
+
+        <!-- Try another button -->
+        <div class="try-another">
+            <button onclick="window.location.href='/'">Try Another</button>
         </div>
         {% endif %}
 
-        <!-- Display errors if any -->
+        <!-- Display error message -->
         {% if error %}
-        <p class="error">{{ error }}</p>
+        <div class="error">
+            {{ error }}
+        </div>
         {% endif %}
     </div>
 </body>
