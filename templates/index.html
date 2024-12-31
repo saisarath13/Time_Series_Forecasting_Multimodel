@@ -4,35 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Price Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #f7f7f7;
-            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #007bff, #74b9ff);
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 500px;
-            margin: 40px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 600px;
+            animation: fadeIn 0.7s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
             text-align: center;
-            color: #333;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
         }
 
         p.instructions {
             text-align: center;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+            font-size: 1rem;
             color: #555;
+            margin-bottom: 30px;
         }
 
         form {
@@ -41,40 +59,43 @@
             gap: 20px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 1rem;
+        .form-group label {
             font-weight: bold;
-            color: #333;
+            font-size: 1rem;
             margin-bottom: 5px;
         }
 
         input[type="text"], select {
             width: 100%;
-            height: 40px;
-            padding: 8px;
+            padding: 14px;
             font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+            outline: none;
         }
 
         button {
             width: 100%;
-            height: 45px;
-            font-size: 1rem;
-            background-color: #007bff;
-            color: white;
+            padding: 14px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: #007bff;
+            color: #ffffff;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background: #0056b3;
+            transform: scale(1.02);
         }
 
         .result, .error {
@@ -84,11 +105,14 @@
         }
 
         .result h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
             color: #333;
         }
 
         .error {
             color: red;
+            font-weight: bold;
         }
 
         .try-another {
@@ -97,17 +121,51 @@
         }
 
         .try-another button {
-            background-color: #007bff;
-            color: white;
-            border: none;
+            width: auto;
             padding: 10px 20px;
             font-size: 1rem;
-            border-radius: 5px;
+            font-weight: bold;
+            background-color: #55efc4;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
         }
 
         .try-another button:hover {
-            background-color: #0056b3;
+            background-color: #00cec9;
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            button, .try-another button {
+                font-size: 1rem;
+            }
+
+            input[type="text"], select, button {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            input[type="text"], select, button {
+                font-size: 0.8rem;
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -126,6 +184,7 @@
             <div class="form-group">
                 <label for="model">Select Model:</label>
                 <select name="model" id="model" required>
+                    <option value="" disabled selected>Select a model</option>
                     <option value="rnn">RNN</option>
                     <option value="lstm">LSTM</option>
                 </select>
@@ -162,5 +221,6 @@
         </div>
         {% endif %}
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
