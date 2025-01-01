@@ -1,7 +1,7 @@
 # Time Series Prediction and Demand Forecasting
 
 ## Overview
-**Time Series Prediction and Demand Forecasting** is a Flask-based web application designed to forecast future stock prices and demand using advanced deep learning models. It leverages **LSTM** and **RNN** models for time series analysis, and is deployed as an **API endpoint on AWS** for scalable cloud-based execution.
+**Time Series Prediction and Demand Forecasting** is a web application designed to forecast future stock prices and demand using advanced deep learning models. It leverages **LSTM** and **RNN** models for time series analysis, and is deployed as an **API endpoint on AWS** for scalable cloud-based execution.
 
 ---
 
@@ -9,7 +9,7 @@
 - **Multiple Models**: Fine-tuned LSTM and RNN models for accurate time series predictions.
 - **Interactive Web Interface**: Predict future stock prices based on user inputs.
 - **Scalable Deployment**: Hosted on AWS API Gateway and Lambda for high availability.
-- **Historical Data Analysis**: Fetches and visualizes stock price trends from Yahoo Finance.
+- **Historical Data Analysis**: Fetches and visualizes stock price trends.
 
 ---
 
@@ -24,7 +24,7 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/time-series-prediction.git
+   git clone https://github.com/saisarath13/time-series-prediction.git
    cd time-series-prediction
    ```
 
@@ -126,5 +126,5 @@ This project is licensed under the [MIT License](LICENSE).
 ## Contact
 For inquiries or contributions, please reach out to:
 - **Email**: sarathk1307@gmail.com
-- **GitHub**: [Your GitHub Profile](https://github.com/your-profile)
+- **GitHub**:https://github.com/saisarath13
 
